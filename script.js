@@ -96,3 +96,4 @@ async function uploadToGoogle(file, progressBar) {
         reader.onerror = error => reject(error);
     });
 }
+
