@@ -1,0 +1,1 @@
+document.getElementById('uploadBtn').onclick=()=>{document.getElementById('status').textContent='2. ZIP (Apps Script) eklendikten sonra yükleme aktif olacaktır.';}

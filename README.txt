@@ -1,0 +1,1 @@
+Bu ilk pakettir. Bir sonraki pakette Apps Script bağlantısı eklenecektir.
