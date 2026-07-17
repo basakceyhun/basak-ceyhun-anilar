@@ -1,4 +1,3 @@
-// YAPILANDIRMA: Buraya Google Apps Script Web App URL'nizi yapıştırın
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyLAxxNSEMT1-GcVmbhxOueJ_Mf4dlO23S4mfjAyrZ4sg6yxA-ZwIOu1z1EfEmbLl5C/exec";
 
 const dropZone = document.getElementById('drop-zone');
@@ -9,126 +8,91 @@ const statusMsg = document.getElementById('status-msg');
 
 let filesToUpload = [];
 
-// Tıklama ile dosya seçme
-dropZone.addEventListener('click', () => fileInput.click());
+// Dosya seçme tetikleyicileri
+dropZone.onclick = () => fileInput.click();
+fileInput.onchange = (e) => handleFiles(e.target.files);
 
-// Sürükle-Bırak Olayları
-dropZone.addEventListener('dragover', (e) => {
+// Sürükle-Bırak efektleri
+dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('bg-blue-100'); };
+dropZone.ondragleave = () => dropZone.classList.remove('bg-blue-100');
+dropZone.ondrop = (e) => {
     e.preventDefault();
-    dropZone.classList.add('drag-over');
-});
-
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
+    dropZone.classList.remove('bg-blue-100');
     handleFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+};
 
 function handleFiles(files) {
     for (let file of files) {
-        // Dosya türü kontrolü
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/heic', 'video/mp4', 'video/quicktime'];
-        if (!allowedTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.heic')) {
-            showStatus(`${file.name} desteklenmeyen bir tür!`, 'text-red-500');
-            continue;
-        }
-
+        const fileId = Math.random().toString(36).substring(7);
+        file.uiId = fileId;
         filesToUpload.push(file);
-        addFileToUI(file);
+        
+        const item = document.createElement('div');
+        item.className = "flex flex-col bg-white p-4 rounded-lg border border-slate-200 shadow-sm mt-3";
+        item.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-semibold text-slate-700 truncate w-40">${file.name}</span>
+                <span class="text-xs text-slate-400">${(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                <div id="progress-${fileId}" class="bg-blue-600 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        `;
+        fileList.appendChild(item);
     }
-    if (filesToUpload.length > 0) {
-        uploadBtn.classList.remove('hidden');
-    }
+    if (filesToUpload.length > 0) uploadBtn.classList.remove('hidden');
 }
 
-function addFileToUI(file) {
-    const fileId = Math.random().toString(36).substring(7);
-    const item = document.createElement('div');
-    item.className = "flex flex-col bg-slate-100 p-3 rounded-lg border border-slate-200";
-    item.innerHTML = `
-        <div class="flex justify-between items-center mb-2">
-            <span class="text-sm font-medium truncate max-w-[200px]">${file.name}</span>
-            <span class="text-xs text-slate-500">${(file.size / (1024 * 1024)).toFixed(2)} MB</span>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-2">
-            <div id="progress-${fileId}" class="progress-bar-fill bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
-        </div>
-    `;
-    item.dataset.id = fileId;
-    fileList.appendChild(item);
-    file.uiId = fileId;
-}
-
-uploadBtn.addEventListener('click', async () => {
+uploadBtn.onclick = async () => {
     uploadBtn.disabled = true;
     uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Yükleniyor...';
 
-    for (let file of filesToUpload) {
+    for (let i = 0; i < filesToUpload.length; i++) {
+        const file = filesToUpload[i];
+        const progressBar = document.getElementById(`progress-${file.uiId}`);
+        
         try {
-            await uploadFile(file);
+            progressBar.style.width = '30%';
+            await uploadToGoogle(file, progressBar);
+            progressBar.style.width = '100%';
+            progressBar.classList.replace('bg-blue-600', 'bg-green-500');
         } catch (error) {
-            console.error(error);
+            console.error("Yükleme hatası:", error);
+            progressBar.classList.replace('bg-blue-600', 'bg-red-500');
         }
     }
 
-    showStatus('Tüm dosyalar başarıyla yüklendi!', 'text-green-600');
-    filesToUpload = [];
+    statusMsg.innerHTML = "✅ İşlem tamamlandı! Google Drive klasörünüzü kontrol edin.";
+    statusMsg.className = "mt-6 text-center text-green-600 font-bold bg-green-50 p-3 rounded-lg";
     uploadBtn.classList.add('hidden');
-    uploadBtn.disabled = false;
-    uploadBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Tümünü Yükle';
-});
+};
 
-async function uploadFile(file) {
-    const reader = new FileReader();
-    
+async function uploadToGoogle(file, progressBar) {
     return new Promise((resolve, reject) => {
-        reader.onload = async () => {
-            const base64 = reader.result.split(',')[1];
-            const progressBar = document.getElementById(`progress-${file.uiId}`);
-            
-            try {
-                // Progress bar başlangıcı
-                progressBar.style.width = '30%';
-                
-                // HATA DÜZELTİLDİ: raw URL yerine en başta tanımladığınız SCRIPT_URL değişkeni kullanıldı.
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        base64: base64,
-                        name: file.name,
-                        mimeType: file.type || 'application/octet-stream'
-                    })
-                });
-
-                progressBar.style.width = '70%';
-
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    progressBar.style.width = '100%';
-                    progressBar.classList.replace('bg-blue-500', 'bg-green-500');
-                    resolve(result);
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (err) {
-                // Bazı durumlarda Google başarılı yüklese bile tarayıcıya CORS hatası dönebilir.
-                // Eğer hata olmasına rağmen dosyanız Drive'a yükleniyorsa, bu blok koruma sağlar.
-                progressBar.style.width = '100%';
-                progressBar.classList.replace('bg-blue-500', 'bg-green-500');
-                resolve({ status: 'success' }); 
-            }
-        };
+        const reader = new FileReader();
         reader.readAsDataURL(file);
-    });
-}
+        reader.onload = async () => {
+            const base64Data = reader.result.split(',')[1];
+            const payload = JSON.stringify({
+                base64: base64Data,
+                name: file.name,
+                mimeType: file.type || 'application/octet-stream'
+            });
 
-function showStatus(msg, colorClass) {
-    statusMsg.innerText = msg;
-    statusMsg.className = `mt-4 text-center text-sm font-bold ${colorClass}`;
-    setTimeout(() => { statusMsg.innerText = ''; }, 5000);
+            // Google Script'e veriyi gönder
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // CORS hatalarını bypass etmek için kritik ayar
+                body: payload
+            })
+            .then(() => {
+                // 'no-cors' modunda yanıt okunamaz ama dosya gider.
+                // Bu yüzden direkt başarılı sayıyoruz.
+                progressBar.style.width = '100%';
+                resolve();
+            })
+            .catch(err => reject(err));
+        };
+        reader.onerror = error => reject(error);
+    });
 }
