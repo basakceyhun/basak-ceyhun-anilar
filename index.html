@@ -3,37 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudUpload - Profesyonel Dosya Yükleme</title>
+    <title>BAŞAK & CEYHUN - Anı Defteri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
+    <!-- Zarif Yazı Tipleri -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="max-w-xl w-full bg-white rounded-2xl shadow-2xl p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-slate-800">Dosya Merkezi</h1>
-            <p class="text-slate-500 mt-2">Fotoğraf ve videolarınızı güvenle yükleyin</p>
+    <div class="glass-card max-w-xl w-full rounded-3xl shadow-2xl p-8 text-center border border-white/50">
+        <!-- Başlık Bölümü -->
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-serif text-rose-800 mb-2 tracking-tight">BAŞAK & CEYHUN</h1>
+            <div class="flex items-center justify-center gap-4 text-rose-600 mb-2">
+                <span class="h-[1px] w-12 bg-rose-300"></span>
+                <p class="font-medium tracking-[0.2em] uppercase text-xs">13.09.2026</p>
+                <span class="h-[1px] w-12 bg-rose-300"></span>
+            </div>
+            <p class="text-slate-500 italic mt-4 text-sm">Hayatımızın en güzel gününden unutulmaz kareler...</p>
         </div>
 
         <!-- Yükleme Alanı -->
-        <div id="drop-zone" class="border-3 border-dashed border-blue-200 rounded-xl p-10 text-center hover:border-blue-500 transition-all cursor-pointer bg-blue-50/50">
+        <div id="drop-zone" class="border-2 border-dashed border-rose-200 rounded-2xl p-10 text-center hover:border-rose-400 transition-all cursor-pointer bg-rose-50/40 group relative overflow-hidden">
             <input type="file" id="file-input" multiple class="hidden" accept=".jpg,.jpeg,.png,.heic,.mp4,.mov">
-            <i class="fas fa-cloud-upload-alt text-5xl text-blue-500 mb-4"></i>
-            <p class="text-lg font-medium text-slate-700">Dosyaları buraya sürükleyin veya tıklayın</p>
-            <p class="text-sm text-slate-400 mt-2">JPG, PNG, HEIC, MP4, MOV desteklenir</p>
+            <div class="mb-4 transform group-hover:scale-110 transition-transform duration-500">
+                <i class="fas fa-camera-retro text-5xl text-rose-300"></i>
+            </div>
+            <p class="text-lg font-medium text-slate-700">Fotoğraf veya Videoları Seçin</p>
+            <p class="text-xs text-slate-400 mt-2 italic">Sürükleyip bırakabilir veya dokunabilirsiniz</p>
         </div>
 
-        <!-- Dosya Listesi -->
-        <div id="file-list" class="mt-6 space-y-3"></div>
+        <!-- Dosya Listesi (Yükleme Öncesi Görünüm) -->
+        <div id="file-list" class="mt-6 space-y-3 max-h-48 overflow-y-auto custom-scrollbar"></div>
 
         <!-- Yükleme Butonu -->
-        <button id="upload-btn" class="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hidden">
-            <i class="fas fa-paper-plane mr-2"></i> Tümünü Yükle
+        <button id="upload-btn" class="w-full mt-8 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-4 rounded-xl transition-all shadow-lg shadow-rose-200 hidden transform active:scale-95">
+            <i class="fas fa-heart mr-2"></i> Anıları Bize Gönder
         </button>
 
+        <!-- Teşekkür Mesajı Alt Bölüm -->
+        <div class="mt-10 pt-8 border-t border-rose-100">
+            <p class="text-rose-800 text-[13px] md:text-sm leading-relaxed italic font-light px-4">
+                "Bu mutlu anımızı bizlerle paylaştığınız için teşekkür ederiz. <br>
+                Bizler de bize ilettiğiniz bu anıları ömür boyu saklayacağız."
+            </p>
+        </div>
+
         <!-- Durum Bildirimleri -->
-        <div id="status-msg" class="mt-4 text-center text-sm font-medium"></div>
+        <div id="status-msg" class="mt-4 text-sm font-medium"></div>
     </div>
 
     <script src="script.js"></script>
