@@ -1,1 +1,17 @@
-body{margin:0;font-family:system-ui;background:#faf8f5;display:flex;justify-content:center;align-items:center;height:100vh}.card{background:#fff;padding:32px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);max-width:420px;text-align:center}button{padding:12px 24px;border:none;border-radius:10px;background:#b9965a;color:#fff;cursor:pointer}input{display:block;margin:20px auto}
+.border-3 { border-width: 3px; }
+
+#drop-zone.drag-over {
+    border-color: #2563eb;
+    background-color: #eff6ff;
+    transform: scale(1.02);
+}
+
+.progress-bar-fill {
+    transition: width 0.3s ease-in-out;
+}
+
+/* Mobil uyumlu dokunmatik efektleri */
+@media (max-width: 640px) {
+    .max-w-xl { padding: 1.5rem; }
+    h1 { font-size: 1.5rem; }
+}
