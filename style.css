@@ -1,17 +1,57 @@
-.border-3 { border-width: 3px; }
-
-#drop-zone.drag-over {
-    border-color: #2563eb;
-    background-color: #eff6ff;
-    transform: scale(1.02);
+/* Genel Ayarlar */
+body {
+    font-family: 'Poppins', sans-serif;
+    /* Soft Çiçekli Arka Plan */
+    background: linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.65)), 
+                url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0;
 }
 
+.font-serif {
+    font-family: 'Playfair Display', serif;
+}
+
+/* Cam Efekti Kart Tasarımı */
+.glass-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 25px 50px -12px rgba(225, 29, 72, 0.1);
+}
+
+/* Özel Kaydırma Çubuğu */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(244, 63, 94, 0.05);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #fda4af;
+    border-radius: 10px;
+}
+
+/* Progress Bar Animasyonu */
 .progress-bar-fill {
-    transition: width 0.3s ease-in-out;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Mobil uyumlu dokunmatik efektleri */
-@media (max-width: 640px) {
-    .max-w-xl { padding: 1.5rem; }
-    h1 { font-size: 1.5rem; }
+#drop-zone {
+    transition: all 0.4s ease;
+}
+
+#drop-zone:hover {
+    background: rgba(255, 241, 242, 0.6);
+}
+
+#status-msg.animate-bounce {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
 }
