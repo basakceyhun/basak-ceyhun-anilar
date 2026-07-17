@@ -92,7 +92,7 @@ async function uploadFile(file) {
                 // Progress bar simülasyonu (GAS gerçek zamanlı progress desteklemez, ancak bitişi yakalarız)
                 progressBar.style.width = '50%';
                 
-                const response = await fetch(SCRIPT_URL, {
+                const response = await fetch(https://script.google.com/macros/s/AKfycbyLAxxNSEMT1-GcVmbhxOueJ_Mf4dlO23S4mfjAyrZ4sg6yxA-ZwIOu1z1EfEmbLl5C/exec, {
                     method: 'POST',
                     body: JSON.stringify({
                         base64: base64,
